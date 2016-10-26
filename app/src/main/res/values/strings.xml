@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">WeatherApp</string>
     <string name="change_city">Change city</string>
+    <string name="celsius_fahr">ºC/ºF</string>
 
     <string name="open_weather_maps_app_id">a0b93aa575ee75ac1301db3a0a532b13</string>
     <string name="google_maps_app_id">AIzaSyB2VB0Ac0oh5YBOExQyH6GozQWLpaLSbsY</string>
@@ -14,6 +15,8 @@
     <string name="weather_snowy">&#xf01b;</string>
     <string name="weather_thunder">&#xf01e;</string>
     <string name="weather_drizzle">&#xf01c;</string>
+    <string name="weather_sunset">&#xf052;</string>
+    <string name="weather_sunrise">&#xf051;</string>
 
     <string name="place_not_found">Sorry, no weather data found.</string>
     <string name="datetime_not_found">Sorry, no couldn\'t update time.</string>

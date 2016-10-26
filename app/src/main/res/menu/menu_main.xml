@@ -7,4 +7,9 @@
         android:orderInCategory="1"
         android:title="@string/change_city"
         app:showAsAction="never"/>
+    <item
+        android:id="@+id/celsius_fahr"
+        android:orderInCategory="2"
+        android:title="@string/celsius_fahr"
+        app:showAsAction="never"/>
 </menu>
