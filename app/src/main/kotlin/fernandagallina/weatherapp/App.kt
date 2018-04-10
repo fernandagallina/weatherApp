@@ -1,10 +1,10 @@
 package fernandagallina.weatherapp
 
 import android.app.Application
-import fernandagallina.weatherapp.inject.NetComponent
-import fernandagallina.weatherapp.inject.NetModule
-import fernandagallina.weatherapp.inject.AppModule
-import fernandagallina.weatherapp.inject.DaggerNetComponent
+import fernandagallina.weatherapp.di.NetComponent
+import fernandagallina.weatherapp.di.NetModule
+import fernandagallina.weatherapp.di.AppModule
+import fernandagallina.weatherapp.di.DaggerNetComponent
 
 class App : Application() {
 

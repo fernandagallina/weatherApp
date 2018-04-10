@@ -1,13 +1,13 @@
 package fernandagallina.weatherapp.weather
 
 import fernandagallina.weatherapp.Service
-import fernandagallina.weatherapp.model.Coord
 import fernandagallina.weatherapp.model.WeatherInfo
-import io.reactivex.functions.Consumer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import javax.inject.Inject
 
-class WeatherPresenter(retrofit: Retrofit, view: WeatherContract.View) : WeatherContract.ActionListener {
+class WeatherPresenter @Inject constructor(retrofit: Retrofit, view: WeatherContract.View) : WeatherContract.ActionListener {
 
     private var view: WeatherContract.View
     private var service: Service
@@ -17,24 +17,22 @@ class WeatherPresenter(retrofit: Retrofit, view: WeatherContract.View) : Weather
         service = Service(retrofit)
     }
 
-    @Inject
-    fun WeatherPresenter(retrofit: Retrofit, view: WeatherContract.View) {
-        this.view = view
-        service = Service(retrofit)
-    }
-
     override fun loadWeatherData(city: String) {
-        service.getCityWeatherInfo(city, "metric")
-                .compose(Service.applyObservableSchedulers())
+        var cityMetric = String.format("%s,%s", city, "metric");
+        service.getCityWeatherInfo(cityMetric)
+                .compose({ single ->
+                    single.subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .unsubscribeOn(Schedulers.io())
+                })
                 .subscribe({ it -> this.onGetCityWeather(it) }, { throwable -> onError(throwable) })
     }
 
     private fun onGetCityWeather(weatherInfo: WeatherInfo) {
-        var coord = weatherInfo.coord
-//        return
+        view.setWeatherIcon(weatherInfo)
     }
 
     private fun onError(throwable: Throwable) {
-        var string = throwable.message
+        TODO("Show correct error message")
     }
 }

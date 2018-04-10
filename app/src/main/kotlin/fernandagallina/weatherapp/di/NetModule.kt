@@ -1,4 +1,4 @@
-package fernandagallina.weatherapp.inject
+package fernandagallina.weatherapp.di
 
 import android.app.Application
 import com.google.gson.FieldNamingPolicy
@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import okhttp3.Cache
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -35,16 +34,8 @@ class NetModule(internal var baseUrl: String) {
     @Provides
     @Singleton
     internal fun provideOkhttpClient(cache: Cache): OkHttpClient {
-        val client = OkHttpClient.Builder()
-                .cache(cache)/*.addInterceptor((Interceptor { chain ->
-            val original = chain.request()
-            val requestBuilder = original.newBuilder()
-                    .header("X-Authorization", "a0b93aa575ee75ac1301db3a0a532b13")
-            val request = requestBuilder.build()
-            chain.proceed(request)
-        }))*/
-
-        return client.build()
+        return OkHttpClient.Builder()
+                .cache(cache).build()
     }
 
     @Provides

@@ -2,42 +2,30 @@ package fernandagallina.weatherapp.weather
 
 import android.graphics.Typeface
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import fernandagallina.weatherapp.App
 import fernandagallina.weatherapp.CityPreference
 import fernandagallina.weatherapp.R
-import fernandagallina.weatherapp.RemoteFetch
-import fernandagallina.weatherapp.inject.DaggerWeatherComponent
-import fernandagallina.weatherapp.inject.WeatherModule
+import fernandagallina.weatherapp.di.DaggerWeatherComponent
+import fernandagallina.weatherapp.di.WeatherModule
+import fernandagallina.weatherapp.model.WeatherInfo
 import kotlinx.android.synthetic.main.fragment_main.*
-import org.json.JSONObject
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 
 class WeatherFragment : Fragment(), WeatherContract.View {
+
     @Inject
     lateinit var presenter: WeatherPresenter
-
-    lateinit var weatherFont: Typeface
-
-    var handler: Handler = Handler(Looper.getMainLooper())
-    var handlerTime: Handler = Handler(Looper.getMainLooper())
-    var sunsetValue: Long = 0
-    var sunriseValue: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         getComponent()
-        weatherFont = Typeface.createFromAsset(activity.assets, "weather.ttf")
         presenter.loadWeatherData(CityPreference(activity).city)
     }
 
@@ -85,15 +73,15 @@ class WeatherFragment : Fragment(), WeatherContract.View {
 //
 //    }
 
-    private fun setWeatherIcon(actualId: Int, sunrise: Long, sunset: Long) {
+    override fun setWeatherIcon(weatherInfo: WeatherInfo) {
+       weatherIconTextView.typeface = Typeface.createFromAsset(activity.assets, "weather.ttf")
 
-        val id = actualId / 100
+        val id = weatherInfo.weather[0].id / 100
         var icon = ""
         var color = R.color.black
-        val res = resources
-        if (actualId == 800) {
+        if (id == 8) {
             val currentTime = Date().time
-            if (currentTime >= sunrise && currentTime < sunset) {
+            if (currentTime in weatherInfo.sys.sunrise..(weatherInfo.sys.sunset - 1)) {
                 icon = activity.getString(R.string.weather_sunny)
                 color = R.color.yellow
             } else {
@@ -124,56 +112,12 @@ class WeatherFragment : Fragment(), WeatherContract.View {
         }
         weatherIconTextView.text = icon
         weatherIconTextView.setTextColor(resources.getColor(color))
+
+        val destFormat = SimpleDateFormat("HH:mm", Locale("en", "US"))
+        val today = Date()
+        timeFieldTextView.text = destFormat.format(today)
+        sunriseFieldTextView.text = destFormat.format(Date(weatherInfo.sys.sunrise))
+        sunsetFieldTextView.text = destFormat.format(Date(weatherInfo.sys.sunset))
+        currentTemperatureField.text = weatherInfo.main.temp.toString()
     }
-
-    private fun updateCityData(lat: String, lon: String, dt: String) {
-        val runnable = Runnable {
-            val json = RemoteFetch.getJSONGoogleMaps(lat, lon, dt)
-            if (json == null) {
-                handlerTime.post {
-                    Toast.makeText(activity,
-                            activity.getString(R.string.datetime_not_found),
-                            Toast.LENGTH_LONG).show()
-                }
-            } else {
-                while (!Thread.currentThread().isInterrupted) {
-                    try {
-                        handlerTime.post { renderTime(json) }
-                        Thread.sleep(10000)
-                    } catch (e: InterruptedException) {
-                        e.printStackTrace()
-                    }
-                }
-            }
-        }
-
-        Thread(runnable).start()
-    }
-
-    private fun renderTime(json: JSONObject?) {
-        try {
-            val status = json!!.getString("status")
-            if (status == "OK") {
-                val timeZoneId = json.getString("timeZoneId")
-
-                val tz = TimeZone.getTimeZone(timeZoneId)
-                val destFormat = SimpleDateFormat("HH:mm")
-                destFormat.timeZone = tz
-                val today = Date()
-                val s = destFormat.format(today)
-                val ss = destFormat.format(Date(sunsetValue))
-                val sr = destFormat.format(Date(sunriseValue))
-                timeFieldTextView.text = s
-                sunriseFieldTextView.text = sr
-                sunsetFieldTextView.text = ss
-            }
-        } catch (e: Exception) {
-            Log.e("Google TimeZone API", "One or more fields not found in the JSON data")
-        }
-
-    }
-
-//    fun changeCity(city: String) {
-//        loadWeatherData(city)
-//    }
 }

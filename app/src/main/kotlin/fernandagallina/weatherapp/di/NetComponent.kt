@@ -1,4 +1,4 @@
-package fernandagallina.weatherapp.inject
+package fernandagallina.weatherapp.di
 
 import javax.inject.Singleton
 

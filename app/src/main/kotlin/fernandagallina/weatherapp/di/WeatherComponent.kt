@@ -1,4 +1,4 @@
-package fernandagallina.weatherapp.inject
+package fernandagallina.weatherapp.di
 
 import dagger.Component
 import fernandagallina.weatherapp.weather.WeatherFragment

@@ -12,7 +12,6 @@ interface WeatherAPI {
     @GET("/data/2.5/weather")
     fun getCityWeatherInfo(
             @Query("q") city: String,
-//            @Query("units") units: String, // metric
             @Query("APPID") appId: String
-    ): Observable<WeatherInfo>
+    ): Single<WeatherInfo>
 }
