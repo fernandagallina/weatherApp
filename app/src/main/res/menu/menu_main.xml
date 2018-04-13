@@ -1,15 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto"
     tools:context="fernandagallina.weatherapp.MainActivity">
+
     <item
+        yourapp:showAsAction="ifRoom"
         android:id="@+id/change_city"
-        android:orderInCategory="1"
-        android:title="@string/change_city"
-        app:showAsAction="never"/>
+        android:icon="@drawable/change_city"/>
+
     <item
+        yourapp:showAsAction="ifRoom"
         android:id="@+id/celsius_fahr"
-        android:orderInCategory="2"
-        android:title="@string/celsius_fahr"
-        app:showAsAction="never"/>
+        android:icon="@drawable/temperature"/>
+
 </menu>

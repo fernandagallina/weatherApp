@@ -14,7 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-class NetModule(internal var baseUrl: String) {
+class NetModule(private var baseUrl: String) {
 
     @Provides
     @Singleton

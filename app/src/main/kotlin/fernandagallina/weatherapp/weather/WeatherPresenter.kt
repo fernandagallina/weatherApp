@@ -7,18 +7,12 @@ import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
 import javax.inject.Inject
 
-class WeatherPresenter @Inject constructor(retrofit: Retrofit, view: WeatherContract.View) : WeatherContract.ActionListener {
+class WeatherPresenter @Inject constructor(retrofit: Retrofit, private var view: WeatherContract.View) : WeatherContract.ActionListener {
 
-    private var view: WeatherContract.View
-    private var service: Service
-
-    init {
-        this.view = view
-        service = Service(retrofit)
-    }
+    private var service: Service = Service(retrofit)
 
     override fun loadWeatherData(city: String) {
-        var cityMetric = String.format("%s,%s", city, "metric");
+        val cityMetric = String.format("%s,%s", city, "metric");
         service.getCityWeatherInfo(cityMetric)
                 .compose({ single ->
                     single.subscribeOn(Schedulers.io())
@@ -33,6 +27,6 @@ class WeatherPresenter @Inject constructor(retrofit: Retrofit, view: WeatherCont
     }
 
     private fun onError(throwable: Throwable) {
-        TODO("Show correct error message")
+        view.showErrorMessage(throwable.localizedMessage)
     }
 }

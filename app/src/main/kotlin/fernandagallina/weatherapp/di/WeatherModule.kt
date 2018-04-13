@@ -8,6 +8,7 @@ import retrofit2.Retrofit
 
 @Module
 class WeatherModule(var view: WeatherContract.View) {
+
     fun WeatherModule(view: WeatherContract.View) {
         this.view = view
     }
